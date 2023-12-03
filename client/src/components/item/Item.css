@@ -1,0 +1,25 @@
+.item {
+  width: 20em;
+}
+
+.item-image {
+  width: 16em;
+  height: 24em;
+  border: 1px solid #000;
+}
+
+.item p {
+  margin: 0.4em 0 0.1em 0;
+  font-size: 1.1em;
+}
+
+.item-price-new {
+  color: #374151;
+  font-size: 1.1em;
+  font-weight: 600;
+}
+
+.item:hover {
+  transform: scale(1.05);
+  transition: 0.6s;
+}
