@@ -40,3 +40,23 @@ export const getBooksByCategory = async (itemsToShow, orderCriteria) => {
     return [];
   }
 };
+
+export const getBookByName = async (bookName) => {
+  const booksCollectionRef = collection(db, "books");
+
+  const booksQuery = query(
+    booksCollectionRef,
+    where("name", "==", bookName),
+    // limit(1) // Assuming there is only one book with a given name
+  );
+
+  try {
+    const data = await getDocs(booksQuery);
+    const book = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }))[0];
+
+    return book || null; // Return null if the book is not found
+  } catch (error) {
+    console.error(error);
+    return null; // Return null in case of an error
+  }
+};
