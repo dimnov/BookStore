@@ -7,7 +7,7 @@
 
 .loginsignup-container {
   width: 34em;
-  height: 32em;
+  height: auto;
   background: #fff;
   margin: auto;
   padding: 2.5em 3.7em;
@@ -53,5 +53,5 @@
 
 .loginsignup span {
   color: #ff4141;
-  font-weight: 600;
+  font-weight: 500;
 }

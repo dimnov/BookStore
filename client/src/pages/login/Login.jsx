@@ -1,7 +1,11 @@
+import "./Login.css";
 import { useState } from "react";
-import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { Link, useNavigate } from "react-router-dom";
-import { auth, googleProvider } from "../../config/firebase.js";
+import { formLoginInputs } from "../../config/formInputs.js";
+import {
+  signInWithEmailAndPasswordHandler,
+  signInWithGoogleHandler,
+} from "../../services/authService.js";
 import FormInput from "../../components/formInput/FormInput.jsx";
 
 const Login = () => {
@@ -10,52 +14,33 @@ const Login = () => {
     email: "",
     password: "",
   });
-  const [error, setError] = useState(null); // New state for tracking login errors
-
-  const inputs = [
-    {
-      id: 1,
-      name: "email",
-      type: "email",
-      placeholder: "Email...",
-      label: "Email...",
-      required: true,
-    },
-    {
-      id: 2,
-      name: "password",
-      type: "password",
-      placeholder: "Password...",
-      label: "Password...",
-      required: true,
-    },
-  ];
+  const [error, setError] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      await signInWithEmailAndPassword(auth, values.email, values.password);
+      await signInWithEmailAndPasswordHandler(values.email, values.password);
       navigate("/");
     } catch (error) {
       console.error(error);
-      setError("Invalid email or password."); // Set error state if login fails
+      setError("Invalid email or password.");
     }
   };
 
   const signInWithGoogle = async () => {
     try {
-      await signInWithPopup(auth, googleProvider);
+      await signInWithGoogleHandler();
       navigate("/");
     } catch (error) {
       console.error(error);
-      setError("An error occurred while signing in with Google."); // Set error state if Google login fails
+      setError("An error occurred while signing in with Google.");
     }
   };
 
   const onChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value });
-    setError(null); // Clear error when user starts typing
+    setError(null);
   };
 
   return (
@@ -64,7 +49,7 @@ const Login = () => {
         <h1>Login</h1>
         <div>
           <form className="loginsignup-fields" onSubmit={handleSubmit}>
-            {inputs.map((input) => (
+            {formLoginInputs.map((input) => (
               <FormInput
                 key={input.id}
                 {...input}
@@ -72,6 +57,9 @@ const Login = () => {
                 onChange={onChange}
               />
             ))}
+            <div>
+              <span className="error-email-password">{error}</span>
+            </div>
             <div className="buttons">
               <button className="continue" type="submit">
                 Continue
