@@ -1,5 +1,6 @@
 .productdisplay {
   display: flex;
+  justify-content: space-between;
   margin: 0 10.6em;
 }
 
@@ -25,9 +26,11 @@
 }
 
 .productdisplay-right {
-  margin: 0 4em;
+  flex: 1;
+  margin-left: 2em;
   display: flex;
   flex-direction: column;
+  gap: 1em;
 }
 
 .productdisplay-right h1 {
@@ -38,7 +41,6 @@
 
 .productdisplay-right-prices {
   display: flex;
-  margin: 2em 0;
   gap: 1.8em;
   font-size: 1.5em;
   font-weight: 700;
@@ -49,7 +51,6 @@
 }
 
 .productdisplay-right-size h1 {
-  margin-top: 3.4em;
   color: #656565;
   font-size: 1.2em;
   font-weight: 600;
@@ -57,7 +58,6 @@
 
 .productdisplay-right-sizes {
   display: flex;
-  margin: 1.8em 0;
   gap: 1.2em;
 }
 
@@ -68,28 +68,29 @@
   cursor: pointer;
 }
 
-.productdisplay-right button {
-  margin-top: 2em;
-  padding: 1.2em 2.5em;
-  width: 12.5em;
+.productdisplay-right .add-to-cart {
+  margin-top: 1em;
   font-size: 1em;
   font-weight: 600;
   color: #fff;
   background: #ff4141;
-  margin-bottom: 2.5em;
   border: none;
   outline: none;
   cursor: pointer;
 }
 
-.productdisplay-right-category {
-  margin-top: 0.6em;
-}
-
-.productdisplay-right-category span {
+.productdisplay-right .add-to-favourite {
+  margin-top: 1em;
+  font-size: 1em;
   font-weight: 600;
+  color: #fff;
+  background: #000;
+  border: none;
+  outline: none;
+  cursor: pointer;
 }
 
-/* .productdisplay-category-tags { */
-/* margin-top: 15em; */
-/* } */
+.buttons-section {
+  display: flex;
+  gap: 1em;
+}

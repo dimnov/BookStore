@@ -29,44 +29,32 @@ export default function ProductDisplay(props) {
         <div className="productdisplay-right-description">
           {product.description}
         </div>
-        <div>
+        <div className="buttons-section">
           <button
+            className="add-to-cart"
             onClick={() => {
               addToCart(id);
             }}
           >
             ADD TO CART
           </button>
+          <button className="add-to-favourite">Add to favourite</button>
           {/* <button
             onClick={() => {
-              // loader();
               deleteBook(id);
             }}
           >
             Delete
           </button>
 
-          <input
-            placeholder="new price"
-            onChange={(e) => setNewPrice(Number(e.target.value))}
-          />
           <button
             onClick={() => {
-              updateBookPrice(id, newPrice);
+              editBook(id);
             }}
           >
-            Update Price
-          </button> */}
-        </div>
-        <div className="productdisplay-category-tags">
-          <p className="productdisplay-right-category">
-            <span>Category: </span>
-            {product.category}
-          </p>
-          {/* <p className="productdisplay-right-category">
-            <span>Tags: </span>Lorem ipsum dolor sit, amet consectetur
-            adipisicing elit. Non, molestiae.
-          </p> */}
+            Edit
+          </button>
+          */}
         </div>
       </div>
     </div>
