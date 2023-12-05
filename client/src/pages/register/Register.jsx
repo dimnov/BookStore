@@ -1,9 +1,11 @@
-import { auth, googleProvider } from "../../config/firebase.js";
-import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
-import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-
+import { Link, useNavigate } from "react-router-dom";
 import FormInput from "../../components/formInput/FormInput.jsx";
+import {
+  registerWithEmailAndPasswordHandler,
+  signInWithGoogleHandler,
+} from "../../services/authService.js";
+import { formRegisterInputs } from "../../config/formInputs.js";
 import "./Register.css";
 
 export default function Register() {
@@ -14,43 +16,15 @@ export default function Register() {
     repeatPassword: "",
   });
 
-  const inputs = [
-    {
-      id: 1,
-      name: "email",
-      type: "email",
-      placeholder: "Email...",
-      errorMessage: "Email is not valid",
-      label: "Email...",
-      required: true,
-    },
-    {
-      id: 2,
-      name: "password",
-      type: "password",
-      placeholder: "Password...",
-      errorMessage: "Password must be at least 6 characters long",
-      label: "Password...",
-      pattern: "^.{6,}$",
-      required: true,
-    },
-    {
-      id: 3,
-      name: "repeatPassword",
-      type: "password",
-      placeholder: "Repeat password...",
-      errorMessage: "Passwords do not match",
-      label: "Repeat password...",
-      pattern: values.password,
-      required: true,
-    },
-  ];
-
   const submitHandler = async (e) => {
     e.preventDefault();
 
     try {
-      await createUserWithEmailAndPassword(auth, values.email, values.password);
+      if (values.password !== values.repeatPassword) {
+        throw new Error("Passwords do not match");
+      }
+
+      await registerWithEmailAndPasswordHandler(values.email, values.password);
       navigate("/");
     } catch (error) {
       console.error(error);
@@ -59,7 +33,7 @@ export default function Register() {
 
   const signInWithGoogle = async () => {
     try {
-      await signInWithPopup(auth, googleProvider);
+      await signInWithGoogleHandler();
       navigate("/");
     } catch (error) {
       console.error(error);
@@ -76,7 +50,7 @@ export default function Register() {
         <h1>Register</h1>
         <div>
           <form className="loginsignup-fields" onSubmit={submitHandler}>
-            {inputs.map((input) => (
+            {formRegisterInputs.map((input) => (
               <FormInput
                 key={input.id}
                 {...input}
