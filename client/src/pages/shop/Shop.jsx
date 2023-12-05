@@ -8,8 +8,6 @@ export default function Shop() {
     <div>
       <Hero />
       <NewCollections />
-      {/* <Offers /> */}
-      {/* <Popular /> */}
       <Newsletter />
     </div>
   );
