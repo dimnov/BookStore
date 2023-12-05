@@ -1,6 +1,6 @@
 import "./Navbar.css";
-import logo from "../Assets/logo.png";
-import cart_icon from "../Assets/cart_icon.png";
+import logo from "../../Assets/logo.png";
+import cart_icon from "../../Assets/cart_icon.png";
 import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ShopContext } from "../../context/ShopContext.jsx";
@@ -61,8 +61,8 @@ export default function Navbar() {
         <Link to="/add">
           <button>Add</button>
         </Link>
-        <Link to="/login">
-          <button>Sign In</button>
+        <Link to="/register">
+          <button>Sign Up</button>
         </Link>
         <button onClick={() => logout()}>Logout</button>
         <Link to="/cart">

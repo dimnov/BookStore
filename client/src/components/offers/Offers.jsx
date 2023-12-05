@@ -1,5 +1,5 @@
 import "./Offers.css";
-import exclusive_image from "../Assets/exclusive_image.png";
+import exclusive_image from "../../Assets/exclusive_image.png";
 export default function Offers() {
   return (
     <div className="offers">
