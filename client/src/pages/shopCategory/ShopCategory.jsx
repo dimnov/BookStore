@@ -1,13 +1,11 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Item from "../../components/item/Item.jsx";
-
-import { getBooksList } from "../../services/GetProduct.js";
 import useSessionStorage from "../../hooks/useSessionStorage.js";
 import useBeforeUnload from "../../hooks/useBeforeUnload.js";
-
 import dropdown_icon from "../../Assets/dropdown_icon.png";
+import { getBooksList } from "../../services/GetProduct.js";
+import { getBooksCount } from "../../services/GetProduct.js";
 import "./ShopCategory.css";
-import { getDocumentCount } from "../../services/FirebaseService.js";
 
 export default function ShopCategory() {
   const [books, setBooks] = useState([]);
@@ -15,12 +13,20 @@ export default function ShopCategory() {
   const [totalBooks, setTotalBooks] = useState();
 
   useEffect(() => {
-    const fetchBooks = async () => {
+    const fetchData = async () => {
       const data = await getBooksList(itemsToShow);
       setBooks(data);
     };
-    fetchBooks();
+    fetchData();
   }, [itemsToShow]);
+
+  useEffect(() => {
+    const fetchCount = async () => {
+      const documentCount = await getBooksCount();
+      setTotalBooks(documentCount);
+    };
+    fetchCount();
+  }, []);
 
   const handleShowMore = () => {
     setItemsToShow(itemsToShow + 15);
@@ -30,19 +36,14 @@ export default function ShopCategory() {
     sessionStorage.removeItem("itemsToShow");
   });
 
-  useEffect(() => {
-    const fetchDocumentCount = async () => {
-      const documentCount = await getDocumentCount();
-      setTotalBooks(documentCount);
-    };
-    fetchDocumentCount();
-  }, [totalBooks]);
-
   return (
     <div className="shop-category">
       <div className="shopcategory-indexSort">
         <p>
-          <span>Showing 1-{itemsToShow}</span> out of {totalBooks} products
+          <span>
+            Showing 1-{itemsToShow > totalBooks ? totalBooks : itemsToShow}
+          </span>{" "}
+          out of {totalBooks} products
         </p>
         <div className="shopcategory-sort categories">
           Categories <img src={dropdown_icon} alt="" />
