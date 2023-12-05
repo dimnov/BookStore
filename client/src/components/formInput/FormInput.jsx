@@ -4,7 +4,7 @@ export default function FormInput(props) {
   const [blur, setBlur] = useState(false);
   const { label, errorMessage, onChange, id, ...inputProps } = props;
 
-  const handleBlur = (e) => {
+  const handleBlur = () => {
     setBlur(true);
   };
 

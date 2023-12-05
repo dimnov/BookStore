@@ -3,10 +3,9 @@ import Item from "../item/Item.jsx";
 import { useEffect, useState } from "react";
 import { getBooksByCategory } from "../../services/GetProduct.js";
 
-export default function RelatedProducts(props) {
+export default function RelatedProducts({ product }) {
   const [books, setBooks] = useState([]);
   const itemsToShow = 4;
-  const { product } = props;
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -17,7 +16,7 @@ export default function RelatedProducts(props) {
     };
 
     fetchBooks();
-  }, [product.category]);
+  }, [product]);
 
   return (
     <div className="relatedproducts">

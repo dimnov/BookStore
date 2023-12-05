@@ -1,9 +1,7 @@
 import { useState } from "react";
-
 import { addDoc, collection } from "firebase/firestore";
-
-import "./AddProduct.css";
 import { db, auth } from "../../config/firebase.js";
+import "./AddProduct.css";
 
 export default function AddProduct() {
   const [newBookAuthor, setNewBookAuthor] = useState("");

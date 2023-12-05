@@ -2,12 +2,16 @@ import { Link } from "react-router-dom";
 import "./Item.css";
 
 export default function Item(props) {
+  const scrollUp = () => {
+    window.scrollTo(0, 0);
+  };
+
   return (
     <div className="item">
       <Link to={`/product/${props.id}`}>
         <img
           className="item-image"
-          onClick={() => window.scrollTo(0, 0)}
+          onClick={() => scrollUp()}
           src={props.image}
           alt="book image"
         />
