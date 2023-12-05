@@ -1,7 +1,7 @@
 import "./Hero.css";
-import hand_icon from "../Assets/hand_icon.png";
-import arrow_icon from "../Assets/arrow.png";
-import book_covers from "../Assets/book-covers.png";
+import hand_icon from "../../Assets/hand_icon.png";
+import arrow_icon from "../../Assets/arrow.png";
+import book_covers from "../../Assets/book-covers.png";
 import { Link } from "react-router-dom";
 
 export default function Hero() {
