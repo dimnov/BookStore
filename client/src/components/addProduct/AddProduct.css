@@ -1,16 +1,16 @@
 .add-product {
-  max-width: 400px;
+  max-width: 25em;
   margin: 0 auto;
 }
 
 .input {
   width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
+  padding: 0.62em;
+  margin-bottom: 0.62em;
   box-sizing: border-box;
   border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 16px;
+  border-radius: 0.25em;
+  font-size: 1.15em;
 }
 
 .input-author {
@@ -20,11 +20,11 @@
 .button-submit {
   background-color: #4caf50;
   color: white;
-  padding: 10px 15px;
+  padding: 0.62em 1.25em;
   border: none;
-  border-radius: 4px;
+  border-radius: 0.25em;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 1em;
 }
 
 .button-submit:hover {

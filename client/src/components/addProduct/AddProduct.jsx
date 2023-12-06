@@ -2,6 +2,7 @@ import { useState } from "react";
 import { addDoc, collection } from "firebase/firestore";
 import { db, auth } from "../../config/firebase.js";
 import "./AddProduct.css";
+import { useNavigate } from "react-router-dom";
 
 export default function AddProduct() {
   const [newBookAuthor, setNewBookAuthor] = useState("");
@@ -10,8 +11,8 @@ export default function AddProduct() {
   const [newBookName, setNewBookName] = useState("");
   const [newBookImage, setNewBookImage] = useState("");
   const [newBookPrice, setNewBookPrice] = useState(0);
-
   const booksCollectionRef = collection(db, "books");
+  const navigate = useNavigate();
 
   const onSubmitBook = async () => {
     try {
@@ -26,6 +27,7 @@ export default function AddProduct() {
         // that is also for the comments
         userId: auth?.currentUser?.uid,
       });
+      navigate("/shop");
     } catch (error) {
       console.error(error);
     }
