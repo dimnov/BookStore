@@ -24,7 +24,7 @@ export default function Product() {
     <div>
       <Breadcrum product={book} />
       <ProductDisplay product={book} id={productId} />
-      <CommentsBox />
+      <CommentsBox bookId={productId} />
       <RelatedProducts product={book} />
     </div>
   );
