@@ -1,26 +1,74 @@
-import { createContext, useState } from "react";
-// import all_product from "../components/Assets/all_product.js";
-import { deleteDoc, doc, updateDoc } from "firebase/firestore";
+import { createContext, useEffect, useState } from "react";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  getDocs,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "../config/firebase.js";
-import { redirect, useParams } from "react-router-dom";
 
 export const ShopContext = createContext(null);
 
 const getDefaultCart = () => {
   let cart = {};
 
-  // for (let i = 0; i <= all_product.length; i++) {
-  //   cart[i] = 0;
-  // }
-
   return cart;
 };
 
 const ShopContextProvider = (props) => {
   const [cartItems, setCartItems] = useState(getDefaultCart());
+  const [productDetails, setProductDetails] = useState({});
+  const [allProducts, setAllProducts] = useState([]);
+
+  // Fetch product details based on the ID
+  const fetchProductDetails = async (itemId) => {
+    const bookDoc = doc(db, "books", itemId);
+    const docSnapshot = await getDoc(bookDoc);
+
+    if (docSnapshot.exists()) {
+      const data = docSnapshot.data();
+      setProductDetails((prev) => ({ ...prev, [itemId]: data }));
+    }
+  };
+
+  useEffect(() => {
+    // Fetch product details for each item in the cart
+    Object.keys(cartItems).forEach((itemId) => {
+      fetchProductDetails(itemId);
+    });
+  }, [cartItems]);
+
+  const fetchAllProducts = async () => {
+    const querySnapshot = await getDocs(collection(db, "books"));
+    const products = [];
+    querySnapshot.forEach((doc) => {
+      products.push({ id: doc.id, ...doc.data() });
+    });
+    setAllProducts(products);
+  };
+
+  useEffect(() => {
+    // Fetch all products when the component mounts
+    fetchAllProducts();
+  }, []);
+
+  useEffect(() => {
+    // Fetch product details for each item in the cart
+    Object.keys(cartItems).forEach((itemId) => {
+      fetchProductDetails(itemId);
+    });
+  }, [cartItems]);
 
   const addToCart = (itemId) => {
-    setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] + 1 }));
+    setCartItems((prev) => {
+      const quantity = prev[itemId] ? prev[itemId] + 1 : 1;
+      return { ...prev, [itemId]: quantity };
+    });
+
+    // Fetch product details for the newly added item
+    fetchProductDetails(itemId);
   };
 
   const deleteBook = async (id) => {
@@ -40,14 +88,15 @@ const ShopContextProvider = (props) => {
   const getTotalCartAmount = () => {
     let totalAmount = 0;
 
-    for (const item in cartItems) {
-      if (cartItems[item] > 0) {
-        // let itemInfo = all_product.find(
-        //   (product) => product.id === Number(item)
-        // );
-        totalAmount += itemInfo.new_price * cartItems[item];
+    for (const itemId in cartItems) {
+      if (cartItems[itemId] > 0) {
+        const itemInfo = productDetails[itemId];
+        if (itemInfo) {
+          totalAmount += itemInfo.price * cartItems[itemId];
+        }
       }
     }
+
     return totalAmount;
   };
 
@@ -65,7 +114,8 @@ const ShopContextProvider = (props) => {
   const contextValue = {
     getTotalCartItems,
     getTotalCartAmount,
-    // all_product,
+    productDetails,
+    allProducts,
     cartItems,
     addToCart,
     deleteBook,
