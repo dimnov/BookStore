@@ -1,12 +1,41 @@
+import "./ProductDisplay.css";
 import { useContext, useState } from "react";
 import { ShopContext } from "../../context/ShopContext.jsx";
-import "./ProductDisplay.css";
+import { AuthContext } from "../../context/AuthProvider.jsx";
+import { adminKey } from "../../config/adminKey.js";
+import { useNavigate } from "react-router-dom";
+// import { auth, db, addDoc, doc, collection } from "firebase/firestore";
+
+// import { db, auth } from "../../config/firebase.js";
+// import { addDoc, doc } from "firebase/firestore";
 
 export default function ProductDisplay(props) {
   const { product, id } = props;
-  const { addToCart, deleteBook, updateBookPrice } = useContext(ShopContext);
+  const { addToCart, deleteBook } = useContext(ShopContext);
+  const { currentUser } = useContext(AuthContext);
+  const navigate = useNavigate();
 
-  // const [newPrice, setNewPrice] = useState(0);
+  const deleteBookHandler = async (id) => {
+    await deleteBook(id);
+    navigate("/shop");
+  };
+
+  // const editBookHandler = async (id) => {
+  //   await editBook(id);
+  // };
+
+  // const addToFavoritesHandler = async () => {
+  //   if (!currentUser) {
+  //     // console.log("User not logged in");
+  //     return;
+  //   }
+  //   const userDocRef = doc(db, "users", currentUser.uid);
+
+  //   // Use addDoc to add the book ID to the 'favoriteBooks' array
+  //   await addDoc(collection(userDocRef, "favoriteBooks"), { bookId: id });
+
+  //   console.log("Book added to favorites");
+  // };
 
   return (
     <div className="productdisplay">
@@ -38,23 +67,35 @@ export default function ProductDisplay(props) {
           >
             ADD TO CART
           </button>
-          <button className="add-to-favourite">Add to favourite</button>
-          {/* <button
-            onClick={() => {
-              deleteBook(id);
-            }}
-          >
-            Delete
-          </button>
+          {currentUser ? (
+            <button
+              className="add-to-favourite"
+              // onClick={() => addToFavoritesHandler()}
+            >
+              Add to favourite
+            </button>
+          ) : null}
 
-          <button
-            onClick={() => {
-              editBook(id);
-            }}
-          >
-            Edit
-          </button>
-          */}
+          {currentUser?.uid === adminKey ? (
+            <>
+              <button
+                className="edit-book"
+                // onClick={() => {
+                // editBookHandler(id);
+                // }}
+              >
+                Edit
+              </button>
+              <button
+                className="delete-book"
+                onClick={() => {
+                  deleteBookHandler(id);
+                }}
+              >
+                Delete
+              </button>
+            </>
+          ) : null}
         </div>
       </div>
     </div>
