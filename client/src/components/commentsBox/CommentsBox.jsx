@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from "react";
 import {
   collection,
   addDoc,
-  serverTimestamp,
   query,
   orderBy,
   getDocs,
@@ -11,12 +10,11 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { db } from "../../config/firebase.js";
+import { AuthContext } from "../../context/AuthProvider.jsx";
 import "./CommentsBox.css";
-import { AuthContext, AuthProvider } from "../../context/AuthProvider.jsx";
 
 export default function CommentsBox({ bookId }) {
   const { currentUser } = useContext(AuthContext);
-  const [user, setUser] = useState(currentUser ? currentUser.email : "");
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState([]);
   const [editingCommentId, setEditingCommentId] = useState(null);
@@ -43,7 +41,6 @@ export default function CommentsBox({ bookId }) {
     e.preventDefault();
 
     if (comment.trim() === "") {
-      // You may display an error message or take appropriate action
       setError("Comment cannot be empty.");
       return;
     }
@@ -52,12 +49,10 @@ export default function CommentsBox({ bookId }) {
 
     try {
       if (editingCommentId) {
-        // Editing an existing comment
         const commentDocRef = doc(commentsCollectionRef, editingCommentId);
         await updateDoc(commentDocRef, { comment, timestamp: new Date() });
         setEditingCommentId(null);
       } else {
-        // Adding a new comment
         await addDoc(commentsCollectionRef, {
           user: currentUser ? currentUser.email : "",
           comment,
@@ -65,7 +60,6 @@ export default function CommentsBox({ bookId }) {
         });
       }
 
-      setUser(currentUser ? currentUser.email : "");
       setComment("");
       fetchComments();
     } catch (error) {
