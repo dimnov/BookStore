@@ -83,8 +83,8 @@
 }
 
 .productdisplay-right .add-to-cart:active,
-.add-to-favourite:active,
 .edit-book:active,
+.add-to-favourite:active,
 .delete-book:active {
   background: #cc3030;
   transform: translateY(2px);

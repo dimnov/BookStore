@@ -1,102 +1,93 @@
-import "./ProductDisplay.css";
-import { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ShopContext } from "../../context/ShopContext.jsx";
 import { AuthContext } from "../../context/AuthProvider.jsx";
 import { adminKey } from "../../config/adminKey.js";
-import { useNavigate } from "react-router-dom";
-// import { auth, db, addDoc, doc, collection } from "firebase/firestore";
+import { deleteBook } from "../../services/bookService.js";
+import {
+  addToFavorites,
+  checkIfInFavorites,
+  removeFromFavorites,
+} from "../../services/favoriteService.js";
 
-// import { db, auth } from "../../config/firebase.js";
-// import { addDoc, doc } from "firebase/firestore";
+import ProductInfo from "./ProductInfo.jsx";
+import ProductButtons from "../productButtons/ProductButtons.jsx";
+import ProductImages from "./ProductImages.jsx";
+import "./ProductDisplay.css";
 
 export default function ProductDisplay(props) {
-  const { product, id } = props;
-  const { addToCart, deleteBook } = useContext(ShopContext);
-  const { currentUser } = useContext(AuthContext);
   const navigate = useNavigate();
+  const { product, id } = props;
+  const { addToCart } = useContext(ShopContext);
+  const { currentUser } = useContext(AuthContext);
+  const [isInFavorites, setIsInFavorites] = useState(false);
 
   const deleteBookHandler = async (id) => {
     await deleteBook(id);
     navigate("/shop");
   };
 
-  // const editBookHandler = async (id) => {
-  //   await editBook(id);
-  // };
+  const addToFavoriteHandler = async () => {
+    if (currentUser?.uid) {
+      await addToFavorites(currentUser.uid, product, id);
+    }
+  };
 
-  // const addToFavoritesHandler = async () => {
-  //   if (!currentUser) {
-  //     // console.log("User not logged in");
-  //     return;
-  //   }
-  //   const userDocRef = doc(db, "users", currentUser.uid);
+  const removeFromFavoriteHandler = async () => {
+    if (currentUser?.uid) {
+      await removeFromFavorites(currentUser.uid, id);
+    }
+  };
 
-  //   // Use addDoc to add the book ID to the 'favoriteBooks' array
-  //   await addDoc(collection(userDocRef, "favoriteBooks"), { bookId: id });
+  const handleToggleFavorite = async () => {
+    if (!currentUser) {
+      return;
+    }
 
-  //   console.log("Book added to favorites");
-  // };
+    if (isInFavorites) {
+      await removeFromFavoriteHandler();
+    } else {
+      await addToFavoriteHandler();
+    }
+
+    setIsInFavorites(!isInFavorites);
+  };
+
+  useEffect(() => {
+    const fetchFavorites = async () => {
+      if (currentUser?.uid) {
+        const isInFavorites = await checkIfInFavorites(currentUser.uid, id);
+        setIsInFavorites(isInFavorites);
+      }
+    };
+
+    fetchFavorites();
+  }, [id, currentUser?.uid]);
 
   return (
     <div className="productdisplay">
       <div className="productdisplay-left">
-        <div className="productdisplay-img-list">
-          <img src={product.image} alt="book image" />
-          <img src={product.image} alt="book image" />
-          <img src={product.image} alt="book image" />
-          <img src={product.image} alt="book image" />
-        </div>
+        <ProductImages
+          images={[product.image, product.image, product.image, product.image]}
+        />
         <div className="productdisplay-img">
-          <img className="productdisplay-main-img" src={product.image} alt="" />
+          <img
+            className="productdisplay-main-img"
+            src={product.image}
+            alt="book-cover"
+          />
         </div>
       </div>
       <div className="productdisplay-right">
-        <h1>{product.name}</h1>
-        <div className="productdisplay-right-prices">
-          <div className="productdisplay-right-price-new">${product.price}</div>
-        </div>
-        <div className="productdisplay-right-description">
-          {product.description}
-        </div>
-        <div className="buttons-section">
-          <button
-            className="add-to-cart"
-            onClick={() => {
-              addToCart(id);
-            }}
-          >
-            ADD TO CART
-          </button>
-          {currentUser ? (
-            <button
-              className="add-to-favourite"
-              // onClick={() => addToFavoritesHandler()}
-            >
-              Add to favourite
-            </button>
-          ) : null}
-
-          {currentUser?.uid === adminKey ? (
-            <>
-              <button
-                className="edit-book"
-                // onClick={() => {
-                // editBookHandler(id);
-                // }}
-              >
-                Edit
-              </button>
-              <button
-                className="delete-book"
-                onClick={() => {
-                  deleteBookHandler(id);
-                }}
-              >
-                Delete
-              </button>
-            </>
-          ) : null}
-        </div>
+        <ProductInfo product={product} />
+        <ProductButtons
+          currentUser={currentUser}
+          isInFavorites={isInFavorites}
+          handleToggleFavorite={handleToggleFavorite}
+          addToCart={() => addToCart(id)}
+          isAdmin={currentUser?.uid === adminKey}
+          deleteBookHandler={() => deleteBookHandler(id)}
+        />
       </div>
     </div>
   );
