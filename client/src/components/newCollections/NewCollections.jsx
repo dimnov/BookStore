@@ -1,7 +1,7 @@
 import "./NewCollections.css";
 import Item from "../item/Item.jsx";
 import { useEffect, useState } from "react";
-import { getBooksList } from "../../services/GetProduct.js";
+import { getBooksList } from "../../services/bookService.js";
 
 export default function NewCollections() {
   const [books, setBooks] = useState([]);

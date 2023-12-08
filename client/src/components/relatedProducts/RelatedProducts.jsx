@@ -1,7 +1,7 @@
 import "./RelatedProducts.css";
 import Item from "../item/Item.jsx";
 import { useEffect, useState } from "react";
-import { getBooksByCategory } from "../../services/GetProduct.js";
+import { getBooksByCategory } from "../../services/bookService.js";
 
 export default function RelatedProducts({ product }) {
   const [books, setBooks] = useState([]);
@@ -9,7 +9,7 @@ export default function RelatedProducts({ product }) {
 
   useEffect(() => {
     const fetchBooks = async () => {
-      if (product.category) {
+      if (product?.category) {
         const data = await getBooksByCategory(itemsToShow, product.category);
         setBooks(data);
       }
