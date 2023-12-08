@@ -30,3 +30,7 @@
 .button-submit:hover {
   background-color: #45a049;
 }
+
+.add-product .errorMessage {
+  color: #ff4141;
+}

@@ -1,30 +1,37 @@
+import "./AddProduct.css";
 import { useState } from "react";
 import { addDoc, collection } from "firebase/firestore";
 import { db, auth } from "../../config/firebase.js";
-import "./AddProduct.css";
 import { useNavigate } from "react-router-dom";
 
 export default function AddProduct() {
-  const [newBookAuthor, setNewBookAuthor] = useState("");
-  const [newBookCategory, setNewBookCategory] = useState("");
-  const [newBookDescription, setNewBookDescription] = useState("");
-  const [newBookName, setNewBookName] = useState("");
-  const [newBookImage, setNewBookImage] = useState("");
-  const [newBookPrice, setNewBookPrice] = useState(0);
+  const [newBook, setNewBook] = useState({
+    author: "",
+    category: "",
+    description: "",
+    image: "",
+    name: "",
+    price: 1,
+  });
+
+  const [errorMessage, setErrorMessage] = useState("");
   const booksCollectionRef = collection(db, "books");
   const navigate = useNavigate();
 
+  const handleChange = (field, value) => {
+    setNewBook((prevBook) => ({ ...prevBook, [field]: value }));
+  };
+
   const onSubmitBook = async () => {
+    if (Object.values(newBook).some((field) => !field)) {
+      setErrorMessage("There is empty fields.");
+      return;
+    }
+
     try {
       await addDoc(booksCollectionRef, {
-        author: newBookAuthor,
-        category: newBookCategory,
-        description: newBookDescription,
-        image: newBookImage,
-        name: newBookName,
-        price: newBookPrice,
+        ...newBook,
 
-        // that is also for the comments
         userId: auth?.currentUser?.uid,
       });
       navigate("/shop");
@@ -35,56 +42,18 @@ export default function AddProduct() {
 
   return (
     <div className="add-product">
-      <input
-        className="input input-author"
-        type="text"
-        name=""
-        id=""
-        placeholder="author"
-        onChange={(e) => setNewBookAuthor(e.target.value)}
-      />
-      <input
-        className="input input-category"
-        type="text"
-        name=""
-        id=""
-        placeholder="category"
-        onChange={(e) => setNewBookCategory(e.target.value)}
-      />
-      <input
-        className="input input-description"
-        type="text"
-        name=""
-        id=""
-        placeholder="description"
-        onChange={(e) => setNewBookDescription(e.target.value)}
-      />
-      <input
-        className="input input-img"
-        type="text"
-        name=""
-        id=""
-        placeholder="img"
-        onChange={(e) => setNewBookImage(e.target.value)}
-      />
-      <input
-        className="input input-name"
-        type="text"
-        name=""
-        id=""
-        placeholder="name"
-        onChange={(e) => setNewBookName(e.target.value)}
-      />
-      <input
-        className="input input-price"
-        type="text"
-        name=""
-        id=""
-        placeholder="price"
-        onChange={(e) => setNewBookPrice(Number(e.target.value))}
-      />
-
-      <button className="button-submit" onClick={() => onSubmitBook()}>
+      {Object.entries(newBook).map(([field, value]) => (
+        <input
+          key={field}
+          className={`input input-${field}`}
+          type="text"
+          placeholder={field}
+          value={value}
+          onChange={(e) => handleChange(field, e.target.value)}
+        />
+      ))}
+      <p className="errorMessage">{errorMessage}</p>
+      <button className="button-submit" onClick={onSubmitBook}>
         Submit
       </button>
     </div>
