@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getBookByName } from "../../services/GetProduct.js";
+import { getBookByName } from "../../services/bookService.js";
 import Item from "../../components/item/Item.jsx";
 import "./Search.css";
 
@@ -48,7 +48,7 @@ export default function Search() {
           />
         ) : null}
         {searchPerformed && searchResult === null ? (
-          <p>No book found with the specified name.</p>
+          <p>No book found with this name.</p>
         ) : null}
       </div>
     </div>

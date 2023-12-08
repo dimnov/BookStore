@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
-// import { ShopContext } from "../context/ShopContext.jsx";
 import { useParams } from "react-router-dom";
 import Breadcrum from "../../components/Breadcrums/Breadcrum.jsx";
 import ProductDisplay from "../../components/productDisplay/ProductDisplay.jsx";
 import CommentsBox from "../../components/commentsBox/CommentsBox.jsx";
 import RelatedProducts from "../../components/relatedProducts/RelatedProducts.jsx";
-import { getBookById } from "../../services/GetProduct.js";
+import { getBookById } from "../../services/bookService.js";
 
 export default function Product() {
   const [book, setBooks] = useState({});

@@ -21,7 +21,7 @@ export default function Register() {
 
     try {
       if (values.password !== values.repeatPassword) {
-        throw new Error("Passwords do not match");
+        return;
       }
 
       await registerWithEmailAndPasswordHandler(values.email, values.password);
