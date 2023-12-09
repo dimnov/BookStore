@@ -1,18 +1,23 @@
+import React from "react";
 import { Route, Routes } from "react-router-dom";
+
 import Navbar from "./components/navbar/Navbar.jsx";
+import Footer from "./components/footer/Footer.jsx";
 import Home from "./pages/home/Home.jsx";
 import ShopCategory from "./pages/shopCategory/ShopCategory.jsx";
-import Product from "./pages/product/Product.jsx";
-import Cart from "./pages/cart/Cart.jsx";
-import Footer from "./components/footer/Footer.jsx";
-
-import AddProduct from "./components/addProduct/AddProduct.jsx";
 import NotFound from "./pages/not-found/NotFound.jsx";
-import Login from "./pages/login/Login.jsx";
-import Register from "./pages/register/Register.jsx";
-import Search from "./pages/search/Search.jsx";
-import Favorite from "./pages/favorite/Favorite.jsx";
+import Loading from "./components/loading/Loading.jsx";
 import AuthGuard from "./guards/AuthGuard.jsx";
+
+const LazySearch = React.lazy(() => import("./pages/search/Search.jsx"));
+const LazyLogin = React.lazy(() => import("./pages/login/Login.jsx"));
+const LazyRegister = React.lazy(() => import("./pages/register/Register.jsx"));
+const LazyFavorite = React.lazy(() => import("./pages/favorite/Favorite.jsx"));
+const LazyCart = React.lazy(() => import("./pages/cart/Cart.jsx"));
+const LazyProduct = React.lazy(() => import("./pages/product/Product.jsx"));
+const LazyAddProduct = React.lazy(() =>
+  import("./components/addProduct/AddProduct.jsx")
+);
 
 function App() {
   return (
@@ -23,15 +28,48 @@ function App() {
         {/* Main Routes */}
         <Route path="/" element={<Home />} />
         <Route path="/shop" element={<ShopCategory />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="product" element={<Product />}>
-          <Route path=":productId" element={<Product />} />
-        </Route>
+        <Route
+          path="/cart"
+          element={
+            <React.Suspense fallback={<Loading />}>
+              <LazyCart />
+            </React.Suspense>
+          }
+        />
+        <Route
+          path="product/:productId"
+          element={
+            <React.Suspense fallback={<Loading />}>
+              <LazyProduct />
+            </React.Suspense>
+          }
+        />
 
         {/* Other Routes */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/search" element={<Search />} />
+        <Route
+          path="/login"
+          element={
+            <React.Suspense fallback={<Loading />}>
+              <LazyLogin />
+            </React.Suspense>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <React.Suspense fallback={<Loading />}>
+              <LazyRegister />
+            </React.Suspense>
+          }
+        />
+        <Route
+          path="/search"
+          element={
+            <React.Suspense fallback={<Loading />}>
+              <LazySearch />
+            </React.Suspense>
+          }
+        />
         <Route path="*" element={<NotFound />} />
 
         {/* Protected Routes */}
@@ -39,7 +77,9 @@ function App() {
           path="/favorite"
           element={
             <AuthGuard>
-              <Favorite />
+              <React.Suspense fallback={<Loading />}>
+                <LazyFavorite />
+              </React.Suspense>
             </AuthGuard>
           }
         />
@@ -47,7 +87,9 @@ function App() {
           path="/add"
           element={
             <AuthGuard>
-              <AddProduct />
+              <React.Suspense fallback={<Loading />}>
+                <LazyAddProduct />
+              </React.Suspense>
             </AuthGuard>
           }
         />
