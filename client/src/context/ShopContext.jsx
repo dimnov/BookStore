@@ -1,20 +1,11 @@
 import { createContext, useEffect, useState } from "react";
-import {
-  collection,
-  deleteDoc,
-  doc,
-  getDoc,
-  getDocs,
-  updateDoc,
-} from "firebase/firestore";
+import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { db } from "../config/firebase.js";
 
 export const ShopContext = createContext(null);
 
 const getDefaultCart = () => {
-  let cart = {};
-
-  return cart;
+  return {};
 };
 
 const ShopContextProvider = (props) => {
@@ -22,7 +13,6 @@ const ShopContextProvider = (props) => {
   const [productDetails, setProductDetails] = useState({});
   const [allProducts, setAllProducts] = useState([]);
 
-  // Fetch product details based on the ID
   const fetchProductDetails = async (itemId) => {
     const bookDoc = doc(db, "books", itemId);
     const docSnapshot = await getDoc(bookDoc);
@@ -33,32 +23,20 @@ const ShopContextProvider = (props) => {
     }
   };
 
-  useEffect(() => {
-    // Fetch product details for each item in the cart
-    Object.keys(cartItems).forEach((itemId) => {
-      fetchProductDetails(itemId);
-    });
-  }, [cartItems]);
-
   const fetchAllProducts = async () => {
     const querySnapshot = await getDocs(collection(db, "books"));
-    const products = [];
-    querySnapshot.forEach((doc) => {
-      products.push({ id: doc.id, ...doc.data() });
-    });
+    const products = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
     setAllProducts(products);
   };
 
   useEffect(() => {
-    // Fetch all products when the component mounts
-    fetchAllProducts();
-  }, []);
-
-  useEffect(() => {
-    // Fetch product details for each item in the cart
-    Object.keys(cartItems).forEach((itemId) => {
+    Object.keys(cartItems).forEach(async (itemId) => {
       fetchProductDetails(itemId);
     });
+    fetchAllProducts();
   }, [cartItems]);
 
   const addToCart = (itemId) => {
@@ -66,19 +44,6 @@ const ShopContextProvider = (props) => {
       const quantity = prev[itemId] ? prev[itemId] + 1 : 1;
       return { ...prev, [itemId]: quantity };
     });
-
-    // Fetch product details for the newly added item
-    fetchProductDetails(itemId);
-  };
-
-  const deleteBook = async (id) => {
-    const bookDoc = doc(db, "books", id);
-    await deleteDoc(bookDoc);
-  };
-
-  const updateBookPrice = async (id, newPrice) => {
-    const bookDoc = doc(db, "books", id);
-    await updateDoc(bookDoc, { price: newPrice });
   };
 
   const removeFromCart = (itemId) => {
@@ -86,41 +51,30 @@ const ShopContextProvider = (props) => {
   };
 
   const getTotalCartAmount = () => {
-    let totalAmount = 0;
-
-    for (const itemId in cartItems) {
-      if (cartItems[itemId] > 0) {
-        const itemInfo = productDetails[itemId];
-        if (itemInfo) {
-          totalAmount += itemInfo.price * cartItems[itemId];
-        }
+    return Object.keys(cartItems).reduce((totalAmount, itemId) => {
+      const itemInfo = productDetails[itemId];
+      if (itemInfo && cartItems[itemId] > 0) {
+        return totalAmount + itemInfo.price * cartItems[itemId];
       }
-    }
-
-    return totalAmount;
+      return totalAmount;
+    }, 0);
   };
 
   const getTotalCartItems = () => {
-    let totalItem = 0;
-
-    for (const item in cartItems) {
-      if (cartItems[item] > 0) {
-        totalItem += cartItems[item];
-      }
-    }
-    return totalItem;
+    return Object.values(cartItems).reduce(
+      (totalItem, count) => totalItem + count,
+      0
+    );
   };
 
   const contextValue = {
     getTotalCartItems,
     getTotalCartAmount,
+    addToCart,
+    removeFromCart,
     productDetails,
     allProducts,
     cartItems,
-    addToCart,
-    deleteBook,
-    updateBookPrice,
-    removeFromCart,
   };
 
   return (
