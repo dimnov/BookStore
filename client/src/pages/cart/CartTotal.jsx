@@ -1,4 +1,9 @@
-export default function CartTotal({ subtotal, shippingFee, totalAmount }) {
+export default function CartTotal({
+  subtotal,
+  shippingFee,
+  totalAmount,
+  onCheckoutHandler,
+}) {
   return (
     <div className="cartitems-down">
       <div className="cartitems-total">
@@ -19,7 +24,9 @@ export default function CartTotal({ subtotal, shippingFee, totalAmount }) {
             <h3>${totalAmount.toFixed(2)}</h3>
           </div>
         </div>
-        <button>PROCEED TO CHECKOUT</button>
+        <button className="checkout-btn" onClick={() => onCheckoutHandler()}>
+          PROCEED TO CHECKOUT
+        </button>
       </div>
     </div>
   );

@@ -3,6 +3,7 @@ import { ShopContext } from "../../context/ShopContext.jsx";
 import "./Cart.css";
 import CartTotal from "./CartTotal.jsx";
 import CartItemsList from "./CartItemsList.jsx";
+import { checkoutItems, onCheckout } from "../../services/checkoutService.js";
 
 export default function Cart() {
   const { getTotalCartAmount, cartItems, removeFromCart, allProducts } =
@@ -16,6 +17,14 @@ export default function Cart() {
   const shippingFee = calculateShippingFee(subtotal);
 
   const totalAmount = subtotal + shippingFee;
+
+  const onCheckoutHandler = async () => {
+    const finishCheckout = await checkoutItems(cartItems, allProducts);
+
+    if (finishCheckout) {
+      await onCheckout(finishCheckout);
+    }
+  };
 
   return (
     <div className="cartitems">
@@ -38,6 +47,7 @@ export default function Cart() {
         subtotal={subtotal}
         shippingFee={shippingFee}
         totalAmount={totalAmount}
+        onCheckoutHandler={onCheckoutHandler}
       />
     </div>
   );

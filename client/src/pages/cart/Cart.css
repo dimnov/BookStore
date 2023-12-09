@@ -57,7 +57,7 @@
   padding: 0.9em 0;
 }
 
-.cartitems-total button {
+.cartitems-total .checkout-btn {
   width: 16.4em;
   height: 3.6em;
   outline: none;
@@ -67,4 +67,8 @@
   font-size: 1em;
   font-weight: 600;
   cursor: pointer;
+}
+
+.cartitems-total .checkout-btn:active {
+  background: #cc3030;
 }
