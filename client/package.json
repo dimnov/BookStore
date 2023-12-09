@@ -1,5 +1,6 @@
 {
-  "homepage": "http://dimitar1512.github.io/react-project",
+  "homepage": "https://dimitar1512.github.io/react-project/",
+  "name": "client",
   "private": true,
   "version": "0.0.0",
   "type": "module",
