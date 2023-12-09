@@ -40,17 +40,16 @@ export const getCategoriesList = async () => {
   try {
     if (booksCollectionRef) {
       const data = await getDocs(booksCollectionRef);
-      const categoriesSet = new Set();
+      const categoriesArray = [];
 
       data.docs.forEach((doc) => {
         const bookData = doc.data();
-        if (bookData.category) {
-          categoriesSet.add(bookData.category);
+        if (bookData.category && !categoriesArray.includes(bookData.category)) {
+          categoriesArray.push(bookData.category);
         }
       });
 
-      const categoriesList = Array.from(categoriesSet);
-      return categoriesList;
+      return categoriesArray;
     }
   } catch (error) {
     console.error(error);
