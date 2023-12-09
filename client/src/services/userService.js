@@ -1,5 +1,6 @@
 import { collection, doc, setDoc } from "firebase/firestore";
-import { db } from "../config/firebase.js";
+import { auth, db } from "../config/firebase.js";
+import { signOut } from "firebase/auth";
 
 export const addNewUser = async (uid, favoriteBooks) => {
   const userRef = doc(collection(db, "users"), uid);
@@ -8,3 +9,7 @@ export const addNewUser = async (uid, favoriteBooks) => {
     favoriteBooks,
   });
 };
+
+export const userSignOut = async () => {
+  await signOut(auth);
+}
