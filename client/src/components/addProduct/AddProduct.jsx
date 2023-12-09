@@ -1,8 +1,7 @@
 import "./AddProduct.css";
 import { useState } from "react";
-import { addDoc, collection } from "firebase/firestore";
-import { db, auth } from "../../config/firebase.js";
 import { useNavigate } from "react-router-dom";
+import { addProduct } from "../../services/productService.js";
 
 export default function AddProduct() {
   const [newBook, setNewBook] = useState({
@@ -15,7 +14,6 @@ export default function AddProduct() {
   });
 
   const [errorMessage, setErrorMessage] = useState("");
-  const booksCollectionRef = collection(db, "books");
   const navigate = useNavigate();
 
   const handleChange = (field, value) => {
@@ -29,11 +27,7 @@ export default function AddProduct() {
     }
 
     try {
-      await addDoc(booksCollectionRef, {
-        ...newBook,
-
-        userId: auth?.currentUser?.uid,
-      });
+      await addProduct(newBook);
       navigate("/shop");
     } catch (error) {
       console.error(error);

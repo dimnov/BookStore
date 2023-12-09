@@ -1,22 +1,21 @@
 import "./Navbar.css";
-import logo from "../../Assets/logo.png";
-import cart_icon from "../../Assets/cart_icon.png";
 import { useContext, useState } from "react";
-import { Link } from "react-router-dom";
 import { ShopContext } from "../../context/ShopContext.jsx";
-import { AuthContext } from "../../context/AuthProvider.jsx";
-import { signOut } from "firebase/auth";
-import { auth } from "../../config/firebase.js";
+import { AuthContext } from "../../context/AuthContext.jsx";
 import { adminKey } from "../../config/adminKey.js";
+import NavbarLogo from "./NavbarLogo.jsx";
+import NavbarMenuItem from "./NavbarMenuItem.jsx";
+import NavbarRightPanel from "./NavbarRightPanel.jsx";
+import { userSignOut } from "../../services/userService.js";
 
 export default function Navbar() {
-  const [menu, setMenu] = useState("shop");
+  const [menu, setMenu] = useState("/");
   const { getTotalCartItems } = useContext(ShopContext);
   const { currentUser } = useContext(AuthContext);
 
   const logout = async () => {
     try {
-      await signOut(auth);
+      await userSignOut();
     } catch (error) {
       console.error(error);
     }
@@ -24,71 +23,32 @@ export default function Navbar() {
 
   return (
     <div className="navbar">
-      <Link to="/">
-        <div className="nav-logo">
-          <img src={logo} alt="logo" />
-          <p>BookStore</p>
-        </div>
-      </Link>
+      <NavbarLogo />
       <ul className="nav-menu">
-        <Link to="/">
-          <li
-            onClick={() => {
-              setMenu("/");
-            }}
-          >
-            Home {menu === "/" ? <hr /> : null}
-          </li>
-        </Link>
-        <Link to="/shop">
-          <li
-            onClick={() => {
-              setMenu("shop");
-            }}
-          >
-            All Books {menu === "shop" ? <hr /> : null}
-          </li>
-        </Link>
-        <Link to="/search">
-          <li
-            onClick={() => {
-              setMenu("search");
-            }}
-          >
-            Search {menu === "search" ? <hr /> : null}
-          </li>
-        </Link>
+        <NavbarMenuItem to="/" menu={menu} setMenu={setMenu}>
+          Home
+        </NavbarMenuItem>
+
+        <NavbarMenuItem to="/shop" menu={menu} setMenu={setMenu}>
+          All Books
+        </NavbarMenuItem>
+
+        <NavbarMenuItem to="/search" menu={menu} setMenu={setMenu}>
+          Search
+        </NavbarMenuItem>
+
         {currentUser ? (
-          <Link to="/favorite">
-            <li
-              onClick={() => {
-                setMenu("favorite");
-              }}
-            >
-              Favorites {menu === "favorite" ? <hr /> : null}
-            </li>
-          </Link>
+          <NavbarMenuItem to="/favorite" menu={menu} setMenu={setMenu}>
+            Favorites
+          </NavbarMenuItem>
         ) : null}
       </ul>
-      <div className="nav-login-cart">
-        {currentUser?.uid === adminKey ? (
-          <Link to="/add">
-            <button>Add</button>
-          </Link>
-        ) : null}
-
-        {currentUser ? null : (
-          <Link to="/login">
-            <button>Sign In</button>
-          </Link>
-        )}
-        {currentUser ? <button onClick={() => logout()}>Logout</button> : null}
-
-        <Link to="/cart">
-          <img className="cart" src={cart_icon} alt="cart" />
-        </Link>
-        <div className="nav-cart-count">{getTotalCartItems()}</div>
-      </div>
+      <NavbarRightPanel
+        currentUser={currentUser}
+        adminKey={adminKey}
+        logout={logout}
+        getTotalCartItems={getTotalCartItems}
+      />
     </div>
   );
 }

@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ShopContext } from "../../context/ShopContext.jsx";
-import { AuthContext } from "../../context/AuthProvider.jsx";
+import { AuthContext } from "../../context/AuthContext.jsx";
 import { adminKey } from "../../config/adminKey.js";
 import { deleteBook } from "../../services/bookService.js";
 import {

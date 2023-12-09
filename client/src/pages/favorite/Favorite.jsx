@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../../context/AuthProvider.jsx";
+import { AuthContext } from "../../context/AuthContext.jsx";
 import Item from "../../components/item/Item.jsx";
 import { getUserFavoriteBooks } from "../../services/favoriteService.js";
 import "./Favorite.css";

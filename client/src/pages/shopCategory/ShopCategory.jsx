@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import useSessionStorage from "../../hooks/useSessionStorage.js";
 import useBeforeUnload from "../../hooks/useBeforeUnload.js";
 import {
