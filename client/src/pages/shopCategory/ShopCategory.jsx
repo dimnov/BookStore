@@ -1,16 +1,23 @@
-import { useEffect, useState } from "react";
-import Item from "../../components/item/Item.jsx";
+import React, { useEffect, useState } from "react";
 import useSessionStorage from "../../hooks/useSessionStorage.js";
 import useBeforeUnload from "../../hooks/useBeforeUnload.js";
-import dropdown_icon from "../../Assets/dropdown_icon.png";
-import { getBooksList } from "../../services/GetProduct.js";
-import { getBooksCount } from "../../services/GetProduct.js";
+import {
+  getBooksByCategory,
+  getBooksList,
+  getCategoriesList,
+  getBooksCount,
+} from "../../services/bookService.js";
+import ShopCategorySort from "./ShopCategorySort";
+import ShopCategoryProducts from "./ShopCategoryProducts";
 import "./ShopCategory.css";
 
 export default function ShopCategory() {
   const [books, setBooks] = useState([]);
   const [itemsToShow, setItemsToShow] = useSessionStorage("itemsToShow", 15);
   const [totalBooks, setTotalBooks] = useState();
+  const [category, setCategory] = useState();
+  const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -24,6 +31,9 @@ export default function ShopCategory() {
     const fetchCount = async () => {
       const documentCount = await getBooksCount();
       setTotalBooks(documentCount);
+
+      const data = await getCategoriesList();
+      setCategory(data);
     };
     fetchCount();
   }, []);
@@ -36,33 +46,38 @@ export default function ShopCategory() {
     sessionStorage.removeItem("itemsToShow");
   });
 
+  const toggleDropdown = async () => {
+    setDropdownOpen(!isDropdownOpen);
+  };
+
+  const handleItemClick = async (item) => {
+    const data = await getBooksByCategory(itemsToShow, item);
+    setBooks(data);
+    setSelectedItem(item);
+    setDropdownOpen(false);
+  };
+
+  const handleResetClick = async () => {
+    const data = await getBooksList(itemsToShow);
+    setBooks(data);
+    setSelectedItem(null);
+    setDropdownOpen(false);
+  };
+
   return (
     <div className="shop-category">
-      <div className="shopcategory-indexSort">
-        <p>
-          <span>
-            Showing 1-{itemsToShow > totalBooks ? totalBooks : itemsToShow}
-          </span>{" "}
-          out of {totalBooks} products
-        </p>
-        <div className="shopcategory-sort categories">
-          Categories <img src={dropdown_icon} alt="" />
-        </div>
-        <div className="shopcategory-sort sort">
-          Sort by <img src={dropdown_icon} alt="" />
-        </div>
-      </div>
-      <div className="shopcategory-products">
-        {books.map((item) => (
-          <Item
-            key={item.id}
-            id={item.id}
-            name={item.name}
-            image={item.image}
-            price={item.price}
-          />
-        ))}
-      </div>
+      <ShopCategorySort
+        itemsToShow={itemsToShow}
+        totalBooks={totalBooks}
+        isDropdownOpen={isDropdownOpen}
+        selectedItem={selectedItem}
+        toggleDropdown={toggleDropdown}
+        handleResetClick={handleResetClick}
+        category={category}
+        handleItemClick={handleItemClick}
+      />
+
+      <ShopCategoryProducts books={books} />
       <div className="shopcategory-loadmore" onClick={handleShowMore}>
         Show more
       </div>
